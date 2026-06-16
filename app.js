@@ -7,8 +7,8 @@ var SECTIONS = [
   { id: 'otros', label: 'Otros', file: 'Otros' },
 ];
 
-var EXTENSIONS = ['jpg', 'jpeg', 'webp', 'png'];
-var MAX_PROBE = 30;
+var EXTENSIONS = ['jpg'];
+var MAX_PROBE = 20;
 
 function imageExists(url) {
   return new Promise(function (resolve) {
@@ -24,25 +24,12 @@ async function discoverImages(label) {
   var base = 'images/';
 
   for (var i = 1; i <= MAX_PROBE; i++) {
-    var padded = String(i).padStart(2, '0');
-    var candidates = [
-      base + label + '-' + padded,
-      base + label + '-' + i,
-    ];
-    var found = false;
-
-    for (var c = 0; c < candidates.length; c++) {
-      for (var e = 0; e < EXTENSIONS.length; e++) {
-        var url = candidates[c] + '.' + EXTENSIONS[e];
-        if (await imageExists(url)) {
-          images.push(url);
-          found = true;
-          break;
-        }
-      }
-      if (found) break;
+    var url = base + label + '-' + String(i).padStart(2, '0') + '.' + EXTENSIONS[0];
+    if (await imageExists(url)) {
+      images.push(url);
+    } else {
+      break;
     }
-    if (!found) break;
   }
   return images;
 }
@@ -120,17 +107,22 @@ async function init() {
   var main = document.querySelector('.main');
   var nav = document.querySelector('.nav-links');
 
-  for (var s = 0; s < SECTIONS.length; s++) {
-    var section = SECTIONS[s];
-    var images = await discoverImages(section.file);
-    if (images.length === 0) continue;
+  var results = await Promise.all(SECTIONS.map(function (section) {
+    return discoverImages(section.file).then(function (images) {
+      return { section: section, images: images };
+    });
+  }));
 
-    main.appendChild(buildSection(section, images));
+  for (var s = 0; s < results.length; s++) {
+    var result = results[s];
+    if (result.images.length === 0) continue;
+
+    main.appendChild(buildSection(result.section, result.images));
 
     var link = document.createElement('a');
-    link.href = '#' + section.id;
+    link.href = '#' + result.section.id;
     link.className = 'nav-link';
-    link.textContent = section.label;
+    link.textContent = result.section.label;
     nav.appendChild(link);
   }
 }
