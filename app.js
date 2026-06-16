@@ -19,14 +19,27 @@ function imageExists(url) {
   });
 }
 
+function probe(url) {
+  return imageExists(url).then(function (exists) {
+    return { url: url, exists: exists };
+  });
+}
+
 async function discoverImages(label) {
-  var images = [];
+  var probes = [];
   var base = 'images/';
 
   for (var i = 1; i <= MAX_PROBE; i++) {
     var url = base + label + '-' + String(i).padStart(2, '0') + '.' + EXTENSIONS[0];
-    if (await imageExists(url)) {
-      images.push(url);
+    probes.push(probe(url));
+  }
+
+  var results = await Promise.all(probes);
+
+  var images = [];
+  for (var r = 0; r < results.length; r++) {
+    if (results[r].exists) {
+      images.push(results[r].url);
     } else {
       break;
     }
