@@ -3,7 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
   <title>Santa Fe de Antioquia — Apartamento.</title>
+  <link rel="preload" as="image" href="images/headerPueblo.jpg">
+  <link rel="preload" as="image" href="images/headerCitadela.png">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,8 +16,15 @@
   </header>
   <nav class="nav">
     <div class="nav-links"></div>
+    <button class="theme-toggle" aria-label="Cambiar tema"></button>
   </nav>
   <main class="main"></main>
+  <dialog id="lightbox">
+    <img class="lightbox-image" src="" alt="">
+    <button class="lightbox-btn lightbox-prev" aria-label="Anterior">&#10094;</button>
+    <button class="lightbox-btn lightbox-next" aria-label="Siguiente">&#10095;</button>
+    <button class="lightbox-close" aria-label="Cerrar">&times;</button>
+  </dialog>
   <footer class="footer">
     <p>Santa Fe de Antioquia &mdash; Apartamento</p>
   </footer>
