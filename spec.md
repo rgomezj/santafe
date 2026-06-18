@@ -85,6 +85,7 @@ Ejemplos válidos:
 
 | Sección         | file             | Descripción                          |
 |-----------------|------------------|--------------------------------------|
+| Recomendaciones | — (especial)     | Imagen informativa (hero card)       |
 | Habitaciones    | Habitaciones     | Dormitorios                          |
 | Sala            | Sala             | Sala principal                       |
 | Cocina          | Cocina           | Cocina                               |
@@ -92,10 +93,12 @@ Ejemplos válidos:
 | Zonas Comunes   | ZonasComunes     | Áreas compartidas del edificio       |
 | Otros           | Otros            | Otras fotografías de interés         |
 
-Cada sección tiene tres campos en `app.js`:
+Cada sección regular tiene tres campos en `app.js`:
 - **`id`**: identificador para el ancla en la URL
 - **`label`**: texto visible en la página
 - **`file`**: prefijo para buscar las imágenes en `images/`
+
+La sección **Recomendaciones** es especial: no usa el descubrimiento automático de imágenes. En lugar de un carrusel, muestra una imagen fija (`images/Recomendaciones.jpeg`) en una tarjeta de ancho completo. Se define con `special: true` y aparece primero en la navegación con una animación de pulso para atraer la atención.
 
 Para agregar, renombrar o eliminar secciones, editar el arreglo `SECTIONS` en `app.js`.
 

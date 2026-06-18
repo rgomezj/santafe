@@ -5,6 +5,7 @@ var SECTIONS = [
   { id: 'banos', label: 'Ba\u00f1os', file: 'Banos' },
   { id: 'zonas-comunes', label: 'Zonas Comunes', file: 'ZonasComunes' },
   { id: 'otros', label: 'Otros', file: 'Otros' },
+  { id: 'recomendaciones', label: 'Recomendaciones', special: true }
 ];
 
 var EXTENSIONS = ['jpg'];
@@ -45,6 +46,25 @@ async function discoverImages(label) {
     }
   }
   return images;
+}
+
+function buildRecommendationSection(section) {
+  var el = document.createElement('section');
+  el.id = section.id;
+  el.className = 'gallery-section recommendation-section';
+
+  el.innerHTML =
+    '<h2 class="section-title">' + section.label + '</h2>' +
+    '<div class="recommendation-card">' +
+      '<img class="recommendation-image" src="images/Recomendaciones.jpeg" alt="Recomendaciones" loading="lazy">' +
+    '</div>';
+
+  el.querySelector('.recommendation-image').addEventListener('click', function (e) {
+    lightboxImages = [e.target.src];
+    openLightbox(0);
+  });
+
+  return el;
 }
 
 var lightboxImages = [];
@@ -236,11 +256,13 @@ async function init() {
   var main = document.querySelector('.main');
   var nav = document.querySelector('.nav-links');
 
-  var results = await Promise.all(SECTIONS.map(function (section) {
-    return discoverImages(section.file).then(function (images) {
-      return { section: section, images: images };
-    });
-  }));
+  var results = await Promise.all(
+    SECTIONS.filter(function (s) { return !s.special; }).map(function (section) {
+      return discoverImages(section.file).then(function (images) {
+        return { section: section, images: images };
+      });
+    })
+  );
 
   for (var s = 0; s < results.length; s++) {
     var result = results[s];
@@ -255,6 +277,15 @@ async function init() {
     nav.appendChild(link);
   }
 
+   var specialSection = SECTIONS.find(function (s) { return s.special; });
+    if (specialSection) {
+    main.appendChild(buildRecommendationSection(specialSection));
+    var link = document.createElement('a');
+    link.href = '#' + specialSection.id;
+    link.className = 'nav-link nav-link-featured';
+    link.textContent = specialSection.label;
+    nav.appendChild(link);
+  }
   initTheme();
   setupAnimations();
 }

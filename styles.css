@@ -470,6 +470,41 @@ body {
   transition: border-color 0.3s;
 }
 
+/* ----- Recommendation section ----- */
+.recommendation-card {
+  padding: 1.25rem 1.5rem 1.5rem;
+}
+
+.recommendation-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  border-radius: calc(var(--radius) - 2px);
+  box-shadow: var(--shadow-md);
+  cursor: zoom-in;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.recommendation-image:hover {
+  transform: scale(1.01);
+  box-shadow: var(--shadow-lg);
+}
+
+/* ----- Featured nav link (pulse animation) ----- */
+.nav-link-featured {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.nav-link-featured:hover,
+.nav-link-featured:focus {
+  animation: none;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(197, 147, 60, 0); }
+  50% { box-shadow: 0 0 0 4px rgba(197, 147, 60, 0.3); }
+}
+
 /* ----- Container queries ----- */
 @container (max-width: 600px) {
   .carousel-viewport {
