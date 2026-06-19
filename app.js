@@ -1,3 +1,114 @@
+var SERVICES_DATA = [
+  {
+    icon: '\uD83C\uDF04',
+    title: 'Vistas panor\u00e1micas',
+    items: [
+      'Vista a la piscina',
+      'Vista al complejo tur\u00edstico',
+    ],
+  },
+  {
+    icon: '\uD83D\uDEC1',
+    title: 'Ba\u00f1o',
+    items: [
+      'Productos de limpieza',
+      'Champ\u00fa',
+      'Jab\u00f3n corporal',
+      'Agua caliente',
+      'Gel de ducha',
+    ],
+  },
+  {
+    icon: '\uD83D\uDECF\uFE0F',
+    title: 'Dormitorio y lavadero',
+    items: [
+      { name: 'Lavadora en la vivienda', detail: 'Gratis' },
+      { name: 'Servicios b\u00e1sicos', detail: 'Toallas, s\u00e1banas, jab\u00f3n y papel higi\u00e9nico' },
+      'Ganchos para la ropa',
+      'S\u00e1banas',
+      'S\u00e1banas de algod\u00f3n',
+      'Almohadas y mantas adicionales',
+      'Persianas o cortinas opacas',
+      'Plancha',
+      'Secadora',
+      'Tendedero de ropa',
+      { name: 'Espacio para guardar ropa', detail: 'armario' },
+      'Entretenimiento',
+      'TV',
+    ],
+  },
+  {
+    icon: '\uD83D\uDC68\u200D\uD83D\uDC69\u200D\uD83D\uDC67\u200D\uD83D\uDC66',
+    title: 'Familia',
+    items: [
+      'Seguros para ventanas',
+      'Juegos de mesa',
+      { name: 'Parque infantil al aire libre', detail: 'Una zona exterior equipada con estructuras de juego para ni\u00f1os' },
+    ],
+  },
+  {
+    icon: '\uD83C\uDF21\uFE0F',
+    title: 'Calefacci\u00f3n y refrigeraci\u00f3n',
+    items: [
+      'Ventiladores port\u00e1tiles',
+      'Aire acondicionado en habitaciones',
+    ],
+  },
+  {
+    icon: '\uD83D\uDD12',
+    title: 'Seguridad en el hogar',
+    items: [
+      'Detector de humo',
+    ],
+  },
+  {
+    icon: '\uD83C\uDF10',
+    title: 'Internet y oficina',
+    items: [
+      'Wifi',
+      'Zona de trabajo',
+    ],
+  },
+  {
+    icon: '\uD83C\uDF73',
+    title: 'Utensilios y vajilla',
+    items: [
+      'Cocina',
+      'Los hu\u00e9spedes pueden cocinar en este espacio',
+      'Refrigerador',
+      'Microondas',
+      'Utensilios b\u00e1sicos para cocinar',
+      'Ollas y sartenes, aceite, sal y pimienta',
+      'Platos y cubiertos',
+      'Bolsa, platos, tazas, etc.',
+      'Congelador',
+      'Estufa de gas de acero inoxidable',
+      { name: 'Cafetera', detail: 'Cafetera de filtro' },
+      'Copas de vino',
+      'Licuadora',
+      'Arrocera',
+      'Compactador de basura',
+    ],
+  },
+  {
+    icon: '\uD83D\uDE97',
+    title: 'Estacionamiento e instalaciones',
+    items: [
+      'Estacionamiento gratuito en las instalaciones',
+      { name: 'Piscinas al aire libre compartidas', detail: 'disponible todo el a\u00f1o, disponible en un horario espec\u00edfico, cubierta de piscina, juguetes de piscina, terraza, tobog\u00e1n acu\u00e1tico' },
+      'Ascensor',
+    ],
+  },
+  {
+    icon: '\uD83D\uDD11',
+    title: 'Servicios',
+    items: [
+      'Llegada aut\u00f3noma',
+      'Cerradura inteligente',
+    ],
+  },
+];
+
 var SECTIONS = [
   { id: 'habitaciones', label: 'Habitaciones', file: 'Habitaciones' },
   { id: 'sala', label: 'Sala', file: 'Sala' },
@@ -65,6 +176,32 @@ function buildRecommendationSection(section) {
   });
 
   return el;
+}
+
+function buildServicesHTML() {
+  var html = '';
+  for (var c = 0; c < SERVICES_DATA.length; c++) {
+    var cat = SERVICES_DATA[c];
+    html += '<div class="services-category">';
+    html += '<h3 class="services-category-title">' + cat.icon + ' ' + cat.title + '</h3>';
+    html += '<ul class="services-category-items">';
+    for (var i = 0; i < cat.items.length; i++) {
+      var item = cat.items[i];
+      html += '<li class="services-item">';
+      if (typeof item === 'string') {
+        html += '<span class="services-item-name">' + item + '</span>';
+      } else {
+        html += '<span class="services-item-name">' + item.name + '</span>';
+        if (item.detail) {
+          html += '<span class="services-item-detail">' + item.detail + '</span>';
+        }
+      }
+      html += '</li>';
+    }
+    html += '</ul>';
+    html += '</div>';
+  }
+  return html;
 }
 
 var lightboxImages = [];
@@ -276,9 +413,33 @@ async function init() {
     link.textContent = result.section.label;
     nav.appendChild(link);
   }
+  
+  var servicesModal = document.getElementById('services-modal');
+  var servicesBody = servicesModal.querySelector('.services-body');
+  servicesBody.innerHTML = buildServicesHTML();
 
-   var specialSection = SECTIONS.find(function (s) { return s.special; });
-    if (specialSection) {
+  var serviciosLink = document.createElement('a');
+  serviciosLink.href = '#';
+  serviciosLink.className = 'nav-link';
+  serviciosLink.textContent = 'Servicios';
+  serviciosLink.addEventListener('click', function (e) {
+    e.preventDefault();
+    servicesModal.showModal();
+    document.body.style.overflow = 'hidden';
+  });
+  nav.appendChild(serviciosLink);
+
+  servicesModal.querySelector('.services-close').addEventListener('click', function () {
+    servicesModal.close();
+    document.body.style.overflow = '';
+  });
+
+  servicesModal.addEventListener('close', function () {
+    document.body.style.overflow = '';
+  });
+
+  var specialSection = SECTIONS.find(function (s) { return s.special; });
+  if (specialSection) {
     main.appendChild(buildRecommendationSection(specialSection));
     var link = document.createElement('a');
     link.href = '#' + specialSection.id;
@@ -286,6 +447,7 @@ async function init() {
     link.textContent = specialSection.label;
     nav.appendChild(link);
   }
+
   initTheme();
   setupAnimations();
 }
